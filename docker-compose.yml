@@ -1,9 +1,9 @@
 version: "3.2"
 services:
   server:
-    image: ypapax/two_ports
+    image: ypapax/https_listen
     command: bash /usr/share/nginx/html/entrypoint.sh
-    container_name: two_ports_compose
+    container_name: https_gclb_compose
     ports:
       - 80:80/tcp
       - 8080:8080/tcp
