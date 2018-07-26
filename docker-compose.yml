@@ -6,4 +6,4 @@ services:
     container_name: https_gclb_compose
     ports:
       - 80:80/tcp
-      - 8080:8080/tcp
+      - 81:81/tcp

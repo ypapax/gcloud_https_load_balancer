@@ -24,12 +24,18 @@ rerun(){
 
 up(){
 	build
+	docker-compose build
 	docker-compose stop
 	docker-compose up
 }
 
 curlloca(){
+	curl localhost:81
 	curl localhost:80
-	curl localhost:8080
 }
+
+ssh(){
+	docker exec -ti https_gclb_compose /bin/bash
+}
+
 $@
