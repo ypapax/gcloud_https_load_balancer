@@ -32,6 +32,7 @@ up(){
 curlloca(){
 	curl localhost:81
 	curl localhost:80
+	curl --insecure https://localhost
 }
 
 ssh(){
