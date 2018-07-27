@@ -86,6 +86,7 @@ delete_health_check(){
 create_backend(){
 	gcloud compute backend-services create my-backend-name --global \
 		--health-checks=my-health-check \
+		--protocol HTTPS \
 		--port-name myapp
 }
 
