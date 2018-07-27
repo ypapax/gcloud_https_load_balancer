@@ -24,6 +24,8 @@ curlall(){
 }
 
 curlall_https(){
+	health
+	delim
 	curlWorkersHttps
 	delim
 	curlBalancerHttps
