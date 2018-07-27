@@ -14,7 +14,7 @@ createAll(){
 	create_http_proxy1
 	forwarding_rule
 	sleep 5
-	curlall
+	curlall_https
 }
 
 curlall(){
@@ -69,7 +69,7 @@ set_named_ports(){
 }
 
 create_health_check(){
-	gcloud compute health-checks create http my-health-check --port 80 \
+	gcloud compute health-checks create https my-health-check --port 443 \
 	    --check-interval 30s \
 	    --healthy-threshold 1 \
 	    --timeout 10s \
@@ -109,16 +109,18 @@ url_map_delete1(){
 }
 
 create_http_proxy1(){
-	gcloud compute target-http-proxies create my-example-proxy1 --url-map my-example-map1
+	gcloud compute target-https-proxies create my-example-proxy1 \
+		--ssl-certificates my-test-ssl-cert \
+		--url-map my-example-map1
 }
 
 delete_http_proxy1(){
-	gcloud compute target-http-proxies delete my-example-proxy1 --quiet
+	gcloud compute target-https-proxies delete my-example-proxy1 --quiet
 }
 
 
 forwarding_rule(){
-	gcloud compute forwarding-rules create my-forwarding-rule --global --target-http-proxy my-example-proxy1 --ports 80
+	gcloud compute forwarding-rules create my-forwarding-rule --global --target-https-proxy my-example-proxy1 --ports 443
 }
 
 describe_forwarding_rule(){
@@ -155,7 +157,7 @@ curlWorkers(){
 }
 curlWorkersHttps(){
 	for ip in $(workers_ips); do
-		curl --insecure https://$ip:80
+		curl --insecure https://$ip
 	done
 }
 
@@ -198,5 +200,10 @@ reboot(){
 		inst=$(gcloud compute instances list | grep my-example- | awk '{print $1}')
 		gcloud compute ssh $inst -- "sudo reboot"
 	done
+}
+
+list_health_checks(){
+	 gcloud compute health-checks list
+	 gcloud compute https-health-checks list
 }
 $@
