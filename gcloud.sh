@@ -65,7 +65,7 @@ delete_group(){
 
 set_named_ports(){
 	gcloud compute instance-groups managed set-named-ports my-example-group-name \
-   --named-ports myapp:80 \
+   --named-ports myapp:443 \
 	--zone europe-west1-b
 }
 
