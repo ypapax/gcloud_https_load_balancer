@@ -14,4 +14,6 @@ COPY selfsigned.key /
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /app
 EXPOSE 81
+EXPOSE 80
+EXPOSE 443
 

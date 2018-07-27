@@ -19,6 +19,13 @@ createAll(){
 
 curlall(){
 	curlWorkers
+	delim
+	curlBalancers
+}
+
+curlall_https(){
+	curlWorkersHttps
+	delim
 	curlBalancers
 }
 
@@ -145,6 +152,11 @@ curlWorkers(){
 		curl $ip:80
 	done
 }
+curlWorkersHttps(){
+	for ip in $(workers_ips); do
+		curl --insecure https://$ip:80
+	done
+}
 
 delim(){
 	set +x
@@ -174,4 +186,20 @@ describeBackends(){
 	gcloud compute backend-services describe https-gclb-backend --global | tee >(cat 1>&2) | grep 80
 }
 
+repush(){
+	./commands.sh build
+	./commands.sh push
+	reboot
+}
+
+reboot(){
+	for ip in $(workers_ips); do
+		inst=$(gcloud compute instances list | grep https-gclb- | awk '{print $1}')
+		gcloud compute ssh $inst -- "sudo reboot"
+	done
+}
+
+ssh(){
+	docker exec -ti https_gclb_compose /bin/bash
+}
 $@
