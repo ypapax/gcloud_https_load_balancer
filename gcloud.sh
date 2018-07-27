@@ -7,7 +7,7 @@ createAll(){
 	template_create
 	create_managed_group
 	set_named_ports
-	set +e; create_health_check; set -e;
+	create_health_check
 	create_backend
 	add_backend
 	url_map
@@ -35,6 +35,7 @@ deleteAll(){
 	delete_http_proxy1
 	url_map_delete1
 	delete_backend
+	delete_health_check
 	delete_group
 	template_delete
 	set -e;
@@ -74,6 +75,10 @@ create_health_check(){
 	    --healthy-threshold 1 \
 	    --timeout 10s \
 	    --unhealthy-threshold 3
+}
+
+delete_health_check(){
+	gcloud compute health-checks delete my-health-check --quiet
 }
 
 create_backend(){
