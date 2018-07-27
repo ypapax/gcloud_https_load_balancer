@@ -7,7 +7,7 @@ createAll(){
 	template_create
 	create_managed_group
 	set_named_ports
-	set +e; create_health_check80; set -e;
+	set +e; create_health_check; set -e;
 	create_backend
 	add_backend
 	url_map
@@ -51,7 +51,7 @@ template_delete(){
 
 
 create_managed_group(){
-	gcloud compute instance-groups managed create https-gclb-group \
+	gcloud compute instance-groups managed create https-gclb-group-name \
     --base-instance-name https-gclb \
     --size 1 \
     --template mytemplate \
@@ -59,17 +59,17 @@ create_managed_group(){
 }
 
 delete_group(){
-	gcloud compute instance-groups managed delete https-gclb-group --quiet
+	gcloud compute instance-groups managed delete https-gclb-group-name --quiet
 }
 
 set_named_ports(){
-	gcloud compute instance-groups managed set-named-ports https-gclb-group \
-   --named-ports app80:80 \
+	gcloud compute instance-groups managed set-named-ports https-gclb-group-name \
+   --named-ports myapp:80 \
 	--zone europe-west1-b
 }
 
-create_health_check80(){
-	gcloud compute health-checks create http healthcheck80 --port 80 \
+create_health_check(){
+	gcloud compute health-checks create http my-health-check --port 80 \
 	    --check-interval 30s \
 	    --healthy-threshold 1 \
 	    --timeout 10s \
@@ -78,8 +78,8 @@ create_health_check80(){
 
 create_backend(){
 	gcloud compute backend-services create my-backend-name --global \
-		--health-checks=healthcheck80 \
-		--port-name app80
+		--health-checks=my-health-check \
+		--port-name myapp
 }
 
 health(){
@@ -96,7 +96,7 @@ delete_backend(){
 add_backend(){
 	gcloud compute backend-services add-backend my-backend-name \
 	--global \
-	--instance-group=https-gclb-group \
+	--instance-group=https-gclb-group-name \
 	--instance-group-zone europe-west1-b
 }
 
@@ -118,15 +118,15 @@ delete_http_proxy1(){
 
 
 forwarding_rule(){
-	gcloud compute forwarding-rules create forwarding-rule80 --global --target-http-proxy https-gclb-proxy1 --ports 80
+	gcloud compute forwarding-rules create my-forwarding-rule --global --target-http-proxy https-gclb-proxy1 --ports 80
 }
 
 describe_forwarding_rule(){
-	gcloud compute forwarding-rules describe forwarding-rule80 --global
+	gcloud compute forwarding-rules describe my-forwarding-rule --global
 }
 
 forwarding_rule_delete(){
-	gcloud compute forwarding-rules delete forwarding-rule80 --global --quiet
+	gcloud compute forwarding-rules delete my-forwarding-rule --global --quiet
 }
 
 load_balancer_frontend_ip(){
@@ -139,12 +139,12 @@ workers_ips(){
 }
 
 curlBalancer(){
-	ip1=$(load_balancer_frontend_ip forwarding-rule80)
+	ip1=$(load_balancer_frontend_ip my-forwarding-rule)
 	curl $ip1:80
 }
 
 curlBalancerHttps(){
-	ip1=$(load_balancer_frontend_ip forwarding-rule80)
+	ip1=$(load_balancer_frontend_ip my-forwarding-rule)
 	curl --insecure https://$ip1
 }
 
@@ -179,7 +179,7 @@ describeAll(){
 }
 
 get_name_ports(){
-	gcloud compute instance-groups managed get-named-ports https-gclb-group
+	gcloud compute instance-groups managed get-named-ports https-gclb-group-name
 }
 
 describeBackends(){
