@@ -77,31 +77,31 @@ create_health_check80(){
 }
 
 create_backend(){
-	gcloud compute backend-services create https-gclb-backend --global \
+	gcloud compute backend-services create my-backend-name --global \
 		--health-checks=healthcheck80 \
 		--port-name app80
 }
 
 health(){
-	gcloud compute backend-services get-health https-gclb-backend --global
+	gcloud compute backend-services get-health my-backend-name --global
 }
 
 
 delete_backend(){
-	gcloud compute backend-services delete https-gclb-backend --global --quiet
+	gcloud compute backend-services delete my-backend-name --global --quiet
 }
 
 
 
 add_backend(){
-	gcloud compute backend-services add-backend https-gclb-backend \
+	gcloud compute backend-services add-backend my-backend-name \
 	--global \
 	--instance-group=https-gclb-group \
 	--instance-group-zone europe-west1-b
 }
 
 url_map(){
-	gcloud compute url-maps create https-gclb-map1 --default-service https-gclb-backend
+	gcloud compute url-maps create https-gclb-map1 --default-service my-backend-name
 }
 
 url_map_delete1(){
@@ -184,7 +184,7 @@ get_name_ports(){
 
 describeBackends(){
 	delim
-	gcloud compute backend-services describe https-gclb-backend --global | tee >(cat 1>&2) | grep 80
+	gcloud compute backend-services describe my-backend-name --global | tee >(cat 1>&2) | grep 80
 }
 
 repush(){
