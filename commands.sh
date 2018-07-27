@@ -35,4 +35,8 @@ curlloca(){
 	curl --insecure https://localhost
 }
 
+ssh(){
+	docker exec -ti https_gclb_compose /bin/bash
+}
+
 $@

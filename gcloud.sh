@@ -51,19 +51,19 @@ template_delete(){
 
 
 create_managed_group(){
-	gcloud compute instance-groups managed create https-gclb-group-name \
-    --base-instance-name https-gclb \
+	gcloud compute instance-groups managed create my-example-group-name \
+    --base-instance-name my-example \
     --size 1 \
     --template mytemplate \
     --zone europe-west1-b
 }
 
 delete_group(){
-	gcloud compute instance-groups managed delete https-gclb-group-name --quiet
+	gcloud compute instance-groups managed delete my-example-group-name --quiet
 }
 
 set_named_ports(){
-	gcloud compute instance-groups managed set-named-ports https-gclb-group-name \
+	gcloud compute instance-groups managed set-named-ports my-example-group-name \
    --named-ports myapp:80 \
 	--zone europe-west1-b
 }
@@ -96,29 +96,29 @@ delete_backend(){
 add_backend(){
 	gcloud compute backend-services add-backend my-backend-name \
 	--global \
-	--instance-group=https-gclb-group-name \
+	--instance-group=my-example-group-name \
 	--instance-group-zone europe-west1-b
 }
 
 url_map(){
-	gcloud compute url-maps create https-gclb-map1 --default-service my-backend-name
+	gcloud compute url-maps create my-example-map1 --default-service my-backend-name
 }
 
 url_map_delete1(){
-	gcloud compute url-maps delete https-gclb-map1 --quiet
+	gcloud compute url-maps delete my-example-map1 --quiet
 }
 
 create_http_proxy1(){
-	gcloud compute target-http-proxies create https-gclb-proxy1 --url-map https-gclb-map1
+	gcloud compute target-http-proxies create my-example-proxy1 --url-map my-example-map1
 }
 
 delete_http_proxy1(){
-	gcloud compute target-http-proxies delete https-gclb-proxy1 --quiet
+	gcloud compute target-http-proxies delete my-example-proxy1 --quiet
 }
 
 
 forwarding_rule(){
-	gcloud compute forwarding-rules create my-forwarding-rule --global --target-http-proxy https-gclb-proxy1 --ports 80
+	gcloud compute forwarding-rules create my-forwarding-rule --global --target-http-proxy my-example-proxy1 --ports 80
 }
 
 describe_forwarding_rule(){
@@ -135,7 +135,7 @@ load_balancer_frontend_ip(){
 }
 
 workers_ips(){
-	gcloud compute instances list | grep https-gclb- | awk '{print $5}'
+	gcloud compute instances list | grep my-example- | awk '{print $5}'
 }
 
 curlBalancer(){
@@ -179,7 +179,7 @@ describeAll(){
 }
 
 get_name_ports(){
-	gcloud compute instance-groups managed get-named-ports https-gclb-group-name
+	gcloud compute instance-groups managed get-named-ports my-example-group-name
 }
 
 describeBackends(){
@@ -195,12 +195,8 @@ repush(){
 
 reboot(){
 	for ip in $(workers_ips); do
-		inst=$(gcloud compute instances list | grep https-gclb- | awk '{print $1}')
+		inst=$(gcloud compute instances list | grep my-example- | awk '{print $1}')
 		gcloud compute ssh $inst -- "sudo reboot"
 	done
-}
-
-ssh(){
-	docker exec -ti https_gclb_compose /bin/bash
 }
 $@
