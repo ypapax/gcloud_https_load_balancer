@@ -20,13 +20,13 @@ createAll(){
 curlall(){
 	curlWorkers
 	delim
-	curlBalancers
+	curlBalancer
 }
 
 curlall_https(){
 	curlWorkersHttps
 	delim
-	curlBalancers
+	curlBalancerHttps
 }
 
 deleteAll(){
@@ -138,13 +138,14 @@ workers_ips(){
 	gcloud compute instances list | grep https-gclb- | awk '{print $5}'
 }
 
-curl80(){
+curlBalancer(){
 	ip1=$(load_balancer_frontend_ip forwarding-rule80)
 	curl $ip1:80
 }
 
-curlBalancers(){
-	curl80
+curlBalancerHttps(){
+	ip1=$(load_balancer_frontend_ip forwarding-rule80)
+	curl --insecure https://$ip1
 }
 
 curlWorkers(){
