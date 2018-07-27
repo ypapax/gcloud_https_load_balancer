@@ -11,7 +11,7 @@ createAll(){
 	create_backend
 	add_backend
 	url_map
-	create_http_proxy1
+	create_proxy
 	forwarding_rule
 	sleep 5
 	curlall_https
@@ -34,7 +34,7 @@ curlall_https(){
 deleteAll(){
 	set +e;
 	forwarding_rule_delete
-	delete_http_proxy1
+	delete_proxy
 	url_map_delete1
 	delete_backend
 	delete_health_check
@@ -115,13 +115,13 @@ url_map_delete1(){
 	gcloud compute url-maps delete my-example-map1 --quiet
 }
 
-create_http_proxy1(){
+create_proxy(){
 	gcloud compute target-https-proxies create my-example-proxy1 \
 		--ssl-certificates my-test-ssl-cert \
 		--url-map my-example-map1
 }
 
-delete_http_proxy1(){
+delete_proxy(){
 	gcloud compute target-https-proxies delete my-example-proxy1 --quiet
 }
 
